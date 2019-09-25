@@ -1,52 +1,56 @@
 package com.example.calculator;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Path;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
     private EditText result;
     private EditText newNumber;
     private TextView displayOperation;
+    private final String OPERAND_CONTENTS = "operands";
+    private static final String STATE_OPERAND1 = "OPERAND1";
 
     // Variables hold operands and type of calculations
 
     private Double operand1 = null;
-    private Double operand2 = null;
+
     private String pendingOperation = "=";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        result = (EditText) findViewById(R.id.result);
-        newNumber = (EditText) findViewById(R.id.newNumber);
-        displayOperation = (TextView) findViewById(R.id.operation);
+        result = findViewById(R.id.result);
+        newNumber = findViewById(R.id.newNumber);
+        displayOperation = findViewById(R.id.operation);
 
-        Button button0 = (Button) findViewById(R.id.button0);
-        Button button1 = (Button) findViewById(R.id.button1);
-        Button button2 = (Button) findViewById(R.id.button2);
-        Button button3 = (Button) findViewById(R.id.button3);
-        Button button4 = (Button) findViewById(R.id.button4);
-        Button button5 = (Button) findViewById(R.id.button5);
-        Button button6 = (Button) findViewById(R.id.button6);
-        Button button7 = (Button) findViewById(R.id.button7);
-        Button button8 = (Button) findViewById(R.id.button8);
-        Button button9= (Button) findViewById(R.id.button9);
-        Button buttonDot = (Button) findViewById(R.id.buttonDot);
+        Button button0 =  findViewById(R.id.button0);
+        Button button1 =  findViewById(R.id.button1);
+        Button button2 =  findViewById(R.id.button2);
+        Button button3 =  findViewById(R.id.button3);
+        Button button4 =  findViewById(R.id.button4);
+        Button button5 =  findViewById(R.id.button5);
+        Button button6 =  findViewById(R.id.button6);
+        Button button7 =  findViewById(R.id.button7);
+        Button button8 =  findViewById(R.id.button8);
+        Button button9 =  findViewById(R.id.button9);
+        Button buttonDot =  findViewById(R.id.buttonDot);
 
-        Button buttonEquals = (Button) findViewById(R.id.buttonEqual);
-        Button buttonDivide = (Button) findViewById(R.id.buttonDivide);
-        Button buttonMultiply = (Button) findViewById(R.id.buttonMult);
-        Button buttonMinus = (Button) findViewById(R.id.buttonMinus);
-        Button buttonPlus = (Button) findViewById(R.id.buttonPlus);
+        Button buttonEquals =  findViewById(R.id.buttonEqual);
+        Button buttonDivide =  findViewById(R.id.buttonDivide);
+        Button buttonMultiply =  findViewById(R.id.buttonMult);
+        Button buttonMinus =  findViewById(R.id.buttonMinus);
+        Button buttonPlus =  findViewById(R.id.buttonPlus);
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -74,8 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 Button b = (Button) view;
                 String op = b.getText().toString();
                 String value = newNumber.getText().toString();
-                if(value.length() != 0){
-                    performOperation(value,op);
+
+                try {
+                    Double doubleValue = Double.valueOf(value);
+                    performOperation(doubleValue, op);
+
+                } catch (NumberFormatException e) {
+                    newNumber.setText("");
                 }
                 pendingOperation = op;
                 displayOperation.setText(pendingOperation);
@@ -89,43 +98,63 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void performOperation(String value, String operation){
-        if(null== operand1){
-            operand1 = Double.valueOf(value);
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        outState.putString(OPERAND_CONTENTS, displayOperation.getText().toString());
+        if(operand1!=null){
+            outState.putDouble(STATE_OPERAND1,operand1);
         }
-        else{
-            operand2 = Double.valueOf(value);
-            if(pendingOperation.equals("=")){
+        super.onSaveInstanceState(outState);
+
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        pendingOperation = savedInstanceState.getString(OPERAND_CONTENTS);
+        operand1 = savedInstanceState.getDouble(STATE_OPERAND1);
+        displayOperation.setText(savedInstanceState.getString(OPERAND_CONTENTS));
+    }
+
+    private void performOperation(Double value, String operation) {
+        if (null == operand1) {
+            operand1 = value;
+        } else {
+
+            if (pendingOperation.equals("=")) {
                 pendingOperation = operation;
             }
-            switch (pendingOperation){
+            switch (pendingOperation) {
                 case "=":
-                    operand1 = operand2;
+
+                    operand1 = value;
                     break;
                 case "/":
-                    if (operand2==0){
-                        operand1=0.0;
-                    }
-                    else{
-                        operand1 /= operand2;
+                    if (value == 0) {
+                        operand1 = 0.0;
+                    } else {
+                        operand1 /= value;
 
                     }
                     break;
                 case "-":
-                    operand1 -= operand2;
+                    operand1 -= value;
                     break;
                 case "+":
-                    operand1+=operand2;
+                    operand1 += value;
                     break;
                 case "*":
-                    operand1*=operand2;
+                    operand1 *= value;
                     break;
 
 
             }
         }
         result.setText(operand1.toString());
-        
+
         newNumber.setText("");
         displayOperation.setText(operation);
     }
