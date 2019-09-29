@@ -15,7 +15,32 @@
         android:text="0"
         app:layout_constraintBaseline_toBaselineOf="@+id/buttonDot"
         app:layout_constraintEnd_toStartOf="@+id/buttonDot"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/button1" />
+
+    <Button
+        android:id="@+id/buttonNeg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minWidth="48dp"
+        android:text="NEG"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/button0"
+        app:layout_constraintTop_toBottomOf="@+id/button0"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/buttonClr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:minWidth="48dp"
+        android:text="C"
+        android:textSize="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonNeg"
+        app:layout_constraintStart_toEndOf="@+id/buttonNeg" />
 
     <Button
         android:id="@+id/button1"
@@ -85,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:minWidth="48dp"
         android:text="9"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
